@@ -1,0 +1,137 @@
+//BFS
+
+#include <stdio.h>
+#include <stdlib.h>
+#define max 100
+
+struct node {
+    int data;
+    struct node *next;
+};
+
+struct Graph {
+    int numadj;
+    struct node *adjlist[max];
+    int visited[max];
+};
+
+struct Queue {
+    int item[max];
+    int front;
+    int rear;
+};
+
+struct node *creation1(int value) {
+    struct node *newnode = (struct node *)malloc(sizeof(struct node));
+    newnode->data = value;
+    newnode->next = NULL;
+    return newnode;
+}
+
+struct Graph *creation2(int value) {
+    struct Graph *graph = (struct Graph *)malloc(sizeof(struct Graph));
+    graph->numadj = value;
+    for(int i = 0; i < value; i++) {
+        graph->adjlist[i] = NULL;
+        graph->visited[i] = 0;
+    }
+    return graph;
+}
+
+struct Queue *creation3() {
+    struct Queue *queue = (struct Queue *)malloc(sizeof(struct Queue));
+    queue->front = -1;
+    queue->rear = -1;
+    return queue;
+}
+
+void enqueue(struct Queue *queue, int value) {
+    if(queue->rear == max - 1) {
+        printf("Queue is full.\n");
+    } 
+    else{
+        if (queue->front == -1) {
+            queue->front = 0;
+        }
+        queue->rear++;
+        queue->item[queue->rear] = value;
+    }
+}
+
+int dequeue(struct Queue *queue) {
+    int value;
+    if(queue->front == -1 || queue->front > queue->rear) {
+        exit(1);
+    }
+    else{
+        value = queue->item[queue->front];
+        queue->front = queue->front + 1;
+        return value;
+    }
+}
+
+int isempty(struct Queue *queue) {
+    if(queue->front == -1) {
+        return 1;
+    }
+    else{
+        return 0;
+    }
+}
+
+void addedge(struct Graph *graph, int src, int dst) {
+    struct node *newnode = creation1(dst);
+    newnode->next = graph->adjlist[src];
+    graph->adjlist[src] = newnode;
+    
+    newnode = creation1(src);
+    newnode->next = graph->adjlist[dst];
+    graph->adjlist[dst] = newnode;
+}
+
+void BFS(struct Graph *graph, int startVertex) {
+   struct Queue *q = creation3();
+    graph->visited[startVertex] = 1;
+    enqueue(q, startVertex);
+
+    while (!isempty(q)) {
+        int currentVertex = dequeue(q);
+        printf("%d ", currentVertex);
+
+        struct node *temp = graph->adjlist[currentVertex];
+        while (temp) {
+            int adjVertex = temp->data;
+            if (graph->visit
+ed[adjVertex] == 0) {
+                graph->visited[adjVertex] = 1;
+                enqueue(q, adjVertex);
+            }
+            temp = temp->next;
+        }
+    }
+    free(q);
+}
+
+int main() {
+    struct Graph *graph = NULL;
+    int a, b, c, e, d, i;
+    
+    printf("Number of adj : ");
+    scanf("%d", &a);
+    graph = creation2(a);
+    
+    printf("Number of vert : ");
+    scanf("%d", &b);
+    
+    for(i = 0; i < b; i++) {
+        printf("Enter S,D : ");
+        scanf("%d %d", &c, &d);
+        addedge(graph, c, d);
+    }
+    
+    printf("Enter start BFS index : ");
+    scanf("%d", &e);
+    BFS(graph, e);
+    
+    return 0;
+}

@@ -1,0 +1,74 @@
+#include <stdio.h>
+#include <stdlib.h>
+#define max 100
+
+struct node{
+    int data;
+    struct node *next;
+};
+
+struct Graph{
+    int numvertex;
+    struct node *adjlist[max];
+    int visited[max];
+};
+
+struct node *creation(int value){
+    struct node *newnode;
+    newnode = (struct node *)malloc(sizeof(struct node));
+    newnode->data = value;
+    newnode->next = NULL;
+    return newnode;
+}
+
+struct Graph *creation1(int value){
+    struct Graph *graph;
+    graph = (struct Graph *)malloc(sizeof(struct Graph));
+    graph->numvertex = value;
+    for(int i=0;i<value;i++){
+        graph->adjlist[i] = NULL;
+        graph->visited[i] = 0;
+    }
+    return graph;
+}
+
+void addedge(struct Graph *graph,int src,int dst){
+    struct node *newnode = creation(dst);
+    newnode->next = graph->adjlist[src];
+    graph->adjlist[src] = newnode;
+    
+    newnode = creation(src);
+    newnode->next = graph->adjlist[dst];
+    graph->adjlist[dst] = newnode;
+}
+
+void DFS(struct Graph *graph,int value){
+    graph->visited[value] = 1;
+    printf("%d ",value);
+    struct node *temp = graph->adjlist[value];
+    while(temp != NULL){
+        int newvalue = temp->data;
+        if(graph->visited[newvalue] == 0){
+            DFS(graph,newvalue);
+        }
+        temp = temp->next;
+    }
+}
+
+int main(){
+    struct Graph *graph = NULL;
+    int a,b,c,d,e;
+    printf("Number of adj : ");
+    scanf("%d",&a);
+    graph = creation1(a);
+    printf("Number of ver : ");
+    scanf("%d",&b);
+    for(int i=0;i<b;i++){
+        printf("Enter source , destination %d : ",i+1);
+        scanf("%d %d",&c,&d);
+        addedge(graph,c,d);
+    }
+    printf("Starting value : ");
+    scanf("%d",&e);
+    DFS(graph,e);
+}

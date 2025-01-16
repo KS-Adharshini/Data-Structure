@@ -1,0 +1,31 @@
+//Shell Sort
+
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(){
+    int a[10],i,j,gap,n,temp;
+    printf("Enter number of elements : ");
+    scanf("%d",&n);
+    for(i=0;i<n;i++){
+        printf("element 1: ");
+        scanf("%d",&a[i]);
+    }
+    for(gap=n/2;gap>0;gap=gap/2){
+        for(j=gap;j<n;j++){
+            for(i=j-gap;i>=0;i=i-gap){
+                if(a[gap+i] > a[i]){
+                    break;
+                }
+                else{
+                    temp = a[i];
+                    a[i] = a[gap+i];
+                    a[gap+i] = temp;
+                }
+            }
+        }
+    }
+    for(i=0;i<n;i++){
+        printf("element 1 (after sorted): %d\n",a[i]);
+    }
+}
